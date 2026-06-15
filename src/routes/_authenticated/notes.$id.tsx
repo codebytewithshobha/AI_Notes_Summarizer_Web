@@ -277,7 +277,7 @@ function Chat({ noteId }: { noteId: string }) {
         {(history ?? []).length === 0 && (
           <p className="text-center text-sm text-muted-foreground">Ask anything about these notes — the tutor only answers from your material.</p>
         )}
-        {(history ?? []).map((m) => (
+        {(history ?? []).map((m: { id: string; role: string; content: string }) => (
           <div key={m.id} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             <div className={`max-w-[80%] whitespace-pre-wrap rounded-2xl px-4 py-2 text-sm ${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted"}`}>
               {m.content}

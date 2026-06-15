@@ -72,7 +72,7 @@ function History() {
             </tr>
           </thead>
           <tbody>
-            {(data?.items ?? []).map((n) => (
+            {(data?.items ?? []).map((n: { id: string; title: string; source_type: string; char_count: number; created_at: string }) => (
               <tr key={n.id} className="border-t border-border/60 hover:bg-accent/30">
                 <td className="px-4 py-3">
                   <button className="font-medium hover:underline" onClick={() => nav({ to: "/notes/$id", params: { id: n.id } })}>
