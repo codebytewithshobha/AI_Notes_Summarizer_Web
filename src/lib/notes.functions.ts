@@ -169,14 +169,17 @@ export const generateArtifacts = createServerFn({ method: "POST" })
         working = partials.join("\n\n");
       }
 
-      const { experimental_output } = await generateText({
+      const { text: rawText } = await generateText({
         model,
-        experimental_output: Output.object({ schema: ArtifactSchema }),
-        prompt: `You are an expert study assistant. Based on the course notes below, produce:
-- A clear, well-structured markdown summary (use headings and bullets).
-- Key concepts with concise definitions.
-- Multiple-choice questions with 4 plausible choices and the correct answer index plus a brief explanation.
-- Flashcards (front = prompt, back = answer).
+        prompt: `You are an expert study assistant. Based on the course notes below, produce a JSON object with this exact shape:
+{
+  "summary": string (markdown with headings and bullets),
+  "key_concepts": Array<{ "term": string, "definition": string }> (3-15 items),
+  "mcqs": Array<{ "question": string, "choices": string[] (3-5), "answer_index": number (0-based), "explanation": string }> (3-10 items),
+  "flashcards": Array<{ "front": string, "back": string }> (5-15 items)
+}
+
+Return ONLY valid JSON, no markdown fences, no commentary.
 
 Notes title: ${note.title}
 
@@ -184,7 +187,8 @@ Notes:
 ${working}`,
       });
 
-      const artifacts = experimental_output as z.infer<typeof ArtifactSchema>;
+      const parsed = extractJson(rawText);
+      const artifacts = ArtifactSchema.parse(parsed);
 
       await supabase
         .from("note_artifacts")
