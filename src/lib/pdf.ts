@@ -1,9 +1,7 @@
 // Browser-side PDF text extraction using pdfjs-dist
 export async function extractPdfText(file: File): Promise<string> {
   const pdfjs = await import("pdfjs-dist");
-  // Use CDN worker to avoid bundler worker setup
-  // @ts-expect-error - workerSrc is a runtime config
-  pdfjs.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
+  (pdfjs.GlobalWorkerOptions as { workerSrc: string }).workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.mjs`;
   const buf = await file.arrayBuffer();
   const doc = await pdfjs.getDocument({ data: buf }).promise;
   let out = "";

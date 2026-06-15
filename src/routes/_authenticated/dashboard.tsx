@@ -1,4 +1,5 @@
-import { createFileRoute, useNavigate, useServerFn } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { FileUp, Loader2, Sparkles, FileText, MessageSquare, BookOpen } from "lucide-react";
