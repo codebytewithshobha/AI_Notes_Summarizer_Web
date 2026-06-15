@@ -149,7 +149,7 @@ function Dashboard() {
             {(recent.data?.items ?? []).length === 0 && (
               <p className="text-sm text-muted-foreground">No notes yet.</p>
             )}
-            {recent.data?.items.map((n) => (
+            {recent.data?.items.map((n: { id: string; title: string; char_count: number; created_at: string }) => (
               <button
                 key={n.id}
                 onClick={() => nav({ to: "/notes/$id", params: { id: n.id } })}
