@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { generateText, Output } from "ai";
+import { generateText } from "ai";
 import { z } from "zod";
 import { createLovableAiGatewayProvider } from "./ai-gateway.server";
 
@@ -133,6 +133,22 @@ function chunk(text: string, size = 12000): string[] {
   const out: string[] = [];
   for (let i = 0; i < text.length; i += size) out.push(text.slice(i, i + size));
   return out;
+}
+
+function extractJson(raw: string): unknown {
+  let s = raw.replace(/```json\s*/gi, "").replace(/```\s*/g, "").trim();
+  const start = s.search(/[\{\[]/);
+  const open = s[start];
+  const close = open === "[" ? "]" : "}";
+  const end = s.lastIndexOf(close);
+  if (start === -1 || end === -1) throw new Error("AI response was not JSON");
+  s = s.slice(start, end + 1);
+  try {
+    return JSON.parse(s);
+  } catch {
+    const cleaned = s.replace(/,\s*}/g, "}").replace(/,\s*]/g, "]").replace(/[\x00-\x1F\x7F]/g, " ");
+    return JSON.parse(cleaned);
+  }
 }
 
 export const generateArtifacts = createServerFn({ method: "POST" })
