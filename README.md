@@ -43,18 +43,29 @@ App runs at `http://localhost:5173`.
 
 ## Environment Variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root (or copy `.env.example`):
+
+```bash
+cp .env.example .env
+```
+
+Fill in the Supabase values from your project, then add **one** AI provider key:
 
 ```env
+# Required for auth + database
 VITE_SUPABASE_URL=your-supabase-url
 VITE_SUPABASE_PUBLISHABLE_KEY=your-publishable-key
 VITE_SUPABASE_PROJECT_ID=your-project-id
 
-# Server-side (only if self-hosting outside Lovable)
-LOVABLE_API_KEY=your-ai-gateway-key
+# Pick ONE of the following AI provider keys
+LOVABLE_API_KEY=         # only available when running on Lovable Cloud
+OPENAI_API_KEY=          # get at https://platform.openai.com/api-keys
+GEMINI_API_KEY=          # get at https://aistudio.google.com/app/apikey
 ```
 
-> On Lovable's runtime, `LOVABLE_API_KEY` is injected automatically. For self-hosted deploys, supply an AI provider key.
+> **Why is an AI key required?** This app summarizes notes, creates quizzes/flashcards, and powers a tutor chat. Those features call an AI model. Non-AI pages (sign-in, landing, history) will work without the key, but the summary/chat features will fail until a key is added.
+>
+> On Lovable's hosted runtime, `LOVABLE_API_KEY` is injected automatically. For local development or self-hosting, use your own `OPENAI_API_KEY` or `GEMINI_API_KEY` — the app now auto-selects the available provider.
 
 ## Project Structure
 

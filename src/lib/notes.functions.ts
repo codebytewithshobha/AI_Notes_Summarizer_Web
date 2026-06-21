@@ -2,17 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { generateText } from "ai";
 import { z } from "zod";
-import { createLovableAiGatewayProvider } from "./ai-gateway.server";
+import { createAiModel } from "./ai-gateway.server";
 
-const MODEL = "google/gemini-3-flash-preview";
 const MAX_CHARS = 60_000;
-
-function getModel() {
-  const key = process.env.LOVABLE_API_KEY;
-  if (!key) throw new Error("Missing LOVABLE_API_KEY");
-  const gateway = createLovableAiGatewayProvider(key);
-  return gateway(MODEL);
-}
 
 // ---------- Create note ----------
 export const createNote = createServerFn({ method: "POST" })
@@ -169,7 +161,7 @@ export const generateArtifacts = createServerFn({ method: "POST" })
       .upsert({ note_id: note.id, user_id: userId, status: "processing", error: null });
 
     try {
-      const model = getModel();
+      const model = createAiModel();
       const chunks = chunk(note.content);
       let working = note.content;
       // Pre-summarize if very long
@@ -254,7 +246,7 @@ export const chatWithNote = createServerFn({ method: "POST" })
       .limit(20);
 
     const context_text = note.content.slice(0, 40000);
-    const model = getModel();
+    const model = createAiModel();
 
     const messages = [
       {
