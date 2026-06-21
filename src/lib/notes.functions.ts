@@ -161,7 +161,7 @@ export const generateArtifacts = createServerFn({ method: "POST" })
       .upsert({ note_id: note.id, user_id: userId, status: "processing", error: null });
 
     try {
-      const model = getModel();
+      const model = createAiModel();
       const chunks = chunk(note.content);
       let working = note.content;
       // Pre-summarize if very long
