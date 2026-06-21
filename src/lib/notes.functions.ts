@@ -246,7 +246,7 @@ export const chatWithNote = createServerFn({ method: "POST" })
       .limit(20);
 
     const context_text = note.content.slice(0, 40000);
-    const model = getModel();
+    const model = createAiModel();
 
     const messages = [
       {
